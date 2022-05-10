@@ -32,9 +32,14 @@ for j in keys:
       if i in model_columns:
          sample[i] = input[j][i]
    query = pd.DataFrame(sample,index=[0])
-   prediction = clf.predict(query)[0]
+   prediction = clf.predict_proba(query)[0]
    lab = dict((v,k) for k,v in model_labels['Playertype'].items())
-   input[j]["Player_Type"] = lab[prediction] # Add the predcition to the user row
+   prediction = list(prediction)
+   input[j]["Player_Type"] = lab[prediction.index(max(prediction))] # Add the predcition to the user row
+   input[j]['type_achiever'] = round(prediction[0]*100,2)
+   input[j]['type_disruptor'] = round(prediction[1]*100,2)
+   input[j]['type_freeSpirit'] = round(prediction[2]*100,2)
+   input[j]['type_player'] = round(prediction[3]*100,2)
 
 
 with open("output.json", "w") as write_file:
